@@ -1,0 +1,17 @@
+[Service]
+Type=oneshot
+TimeoutStartSec=300
+Environment=APP=<%= app %>
+RemainAfterExit=no
+ExecStart=/bin/bash -c ' \
+  /bin/systemctl list-units --no-pager --type=service --all --no-legend | egrep "^$APP-" | \
+  while read line; do \
+    set -- $line; \
+    service=$1; \
+    if [ $service = "$APP-reload.service" ]; then \
+      echo "Skipping to reload $service"; \
+      continue; \
+    fi; \
+    /bin/systemctl reload-or-restart $service || true; \
+  done \
+'

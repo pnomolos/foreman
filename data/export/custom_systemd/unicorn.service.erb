@@ -1,0 +1,55 @@
+<%
+  project_path = engine.root.to_s.split("/")[0..-3].join("/")
+  current_path = File.join(project_path, "current")
+  trap_signals = %w[USR2 KILL QUIT TERM INT]
+  trap = lambda do |s|
+    %Q{trap \\'echo Passing the #{s} signal to Unicorn with PID $(cat "$UNICORN_PID_PATH"); } +
+    %Q{kill -s #{s} $(cat "$UNICORN_PID_PATH")\\' #{s}; }
+  end
+%>
+[Unit]
+PartOf=<%= app %>-<%= name %>.target
+
+[Service]
+User=<%= user %>
+WorkingDirectory=<%= project_path %>
+Environment=PORT=%i
+<% engine.env.each_pair do |var,env| -%>
+Environment="<%= var.upcase %>=<%= env %>"
+<% end -%>
+Environment=UNICORN_PID_PATH=<%= File.join(project_path, "shared/tmp/pids/unicorn.pid") %>
+Restart=always
+StandardInput=null
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=%n
+KillMode=mixed
+TimeoutStopSec=5
+ExecStop=/bin/kill -QUIT $MAINPID
+ExecReload=/bin/kill -USR2 $MAINPID
+ExecStart=/bin/bash -c ' \
+  <%= trap_signals.map(&trap).join("\\\n  ") %> \
+  cd <%= current_path %> && <%= process.command %> & UNICORN_PID=$!; \
+  while true; do \
+    echo "Cycling PID $UNICORN_PID"; \
+    cd <%= current_path %>; \
+    while true; do \
+      sleep 1; \
+      if [ ! -e /proc/$UNICORN_PID ]; then \
+        echo "Unicorn process with PID $UNICORN_PID no longer exists"; \
+        break 1; \
+      fi; \
+    done; \
+    if [ -f "$UNICORN_PID_PATH" ]; then \
+      UNICORN_PID=$(cat "$UNICORN_PID_PATH"); \
+      echo "New Unicorn\'s PID $UNICORN_PID has been found"; \
+    fi; \
+    if [ ! -z "$UNICORN_PID" ] && [ -e /proc/$UNICORN_PID ]; then \
+      echo "Unicorn process wth PID $UNICORN_PID exists"; \
+      continue; \
+    fi; \
+    echo "Breaking the cycle"; \
+    break; \
+  done; \
+  echo "Exiting with 0 status"; \
+'

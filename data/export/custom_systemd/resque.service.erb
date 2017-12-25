@@ -1,0 +1,24 @@
+<%
+  project_path = engine.root.to_s.split("/")[0..-3].join("/")
+  current_path = File.join(project_path, "current")
+%>
+[Unit]
+PartOf=<%= app %>-<%= name %>.target
+
+[Service]
+User=<%= user %>
+WorkingDirectory=<%= project_path %>
+Environment=PORT=%i
+<% engine.env.each_pair do |var,env| -%>
+Environment="<%= var.upcase %>=<%= env %>"
+<% end -%>
+ExecStart=/bin/bash -c 'cd <%= current_path %>; exec <%= process.command %>'
+ExecReload=/bin/kill -QUIT $MAINPID
+ExecStop=/bin/kill -QUIT $MAINPID
+Restart=always
+StandardInput=null
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=%n
+KillMode=mixed
+TimeoutStopSec=15
