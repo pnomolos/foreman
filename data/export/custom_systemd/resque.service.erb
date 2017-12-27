@@ -1,6 +1,7 @@
 <%
   project_path = engine.root.to_s.split("/")[0..-3].join("/")
   current_path = File.join(project_path, "current")
+  max_wait = 25
 %>
 [Unit]
 PartOf=<%= app %>-<%= name %>.target
@@ -12,7 +13,11 @@ Environment=PORT=%i
 <% engine.env.each_pair do |var,env| -%>
 Environment="<%= var.upcase %>=<%= env %>"
 <% end -%>
-ExecStart=/bin/bash -c 'cd <%= current_path %>; exec <%= process.command %>'
+ExecStart=/bin/bash -c ' \
+  sleep $[($RANDOM % <%= max_wait %> )+5]; \
+  cd <%= current_path %>; \
+  exec <%= process.command %> \
+'
 ExecReload=/bin/kill -QUIT $MAINPID
 ExecStop=/bin/kill -QUIT $MAINPID
 Restart=always
