@@ -9,7 +9,6 @@ Environment=PORT=%i
 Environment="<%= var.upcase %>=<%= env %>"
 <% end -%>
 ExecStart=/bin/bash -c 'exec <%= process.command %>'
-ExecReload=/bin/kill -HUP $MAINPID
 ExecStop=/bin/kill -HUP $MAINPID
 Restart=always
 StandardInput=null
