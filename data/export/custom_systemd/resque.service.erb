@@ -17,6 +17,7 @@ ExecStart=/bin/bash -c ' \
   cd <%= current_path %>; \
   exec <%= process.command %> \
 '
+ExecReload=/bin/kill -QUIT $MAINPID
 ExecStop=/bin/kill -QUIT $MAINPID
 Restart=always
 StandardInput=null
@@ -24,4 +25,5 @@ StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=%n
 KillMode=mixed
-TimeoutStopSec=600
+TimeoutStopSec=300
+RestartSec=60
