@@ -27,6 +27,7 @@ KillMode=mixed
 TimeoutStopSec=5
 ExecStop=/bin/kill -QUIT $MAINPID
 ExecReload=/bin/kill -USR2 $MAINPID
+Nice=-3
 ExecStart=/bin/bash -c ' \
   <%= trap_signals.map(&trap).join("\\\n  ") %> \
   cd <%= current_path %> && <%= process.command %> & UNICORN_PID=$!; \
