@@ -14,7 +14,6 @@ Environment=PORT=%i
 Environment="<%= var.upcase %>=<%= env %>"
 <% end -%>
 ExecStart=/bin/bash -c ' \
-  sleep $[($RANDOM % <%= max_wait %> )+5]; \
   cd <%= current_path %>; \
   exec <%= process.command %> \
 '
