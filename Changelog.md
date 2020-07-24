@@ -1,3 +1,37 @@
+## 0.87.1 (2020-04-02)
+
+* update rake for CVE-2020-8130  [David Dollar]
+
+## 0.87.0 (2020-01-07)
+
+* Update specs for systemd export  [Robin Daugherty]
+* Allow processes to be stopped using the app target  [Robin Daugherty]
+* Wait to restart  [Robin Daugherty]
+* systemd sets process name  [Robin Daugherty]
+
+## 0.86.0 (2019-10-09)
+
+* bundle (but don't use) real thor to ensure we still get vulnerability notifications from github.  [Micah Geisel]
+* we don't need automatiek loaded to boot.  [Micah Geisel]
+* inline thor dependency.  [Micah Geisel]
+* CI: Use ruby 2.5.6, 2.6.4 in the matrix  [Olle Jonsson]
+* add wiki page with reason for not bundling to readme  [David Dollar]
+* CI: Use 2.4.6, 2.5.5, 2.6.3  [Olle Jonsson]
+* update yard for GHSA-xfhh-rx56-rxcr  [David Dollar]
+
+## 0.85.0 (2018-06-18)
+
+* updates rubies in travis - ensures only running with PID would be killed - updates dependencies; runs `codeclimate-test-reporter` after successful build - updates rubies for travis - squashes commits  [LeFnord]
+* Deprecate safe_level of ERB.new in Ruby 2.6  [Koichi ITO]
+* gitignore  [David Dollar]
+* update yard  [David Dollar]
+* Don't upcase env names for daemon processes  [Matthew Savage]
+* Don't upcase env names in Launchd  [Matthew Savage]
+* No upcase for env name in Systemd  [Matthew Savage]
+* Don't force env var names to be upcased  [Matthew Savage]
+* Test that invalid Procfile entries are ignored  [Kevin Litchfield]
+* Remove unused block parameter  [Kevin Litchfield]
+
 ## 0.84.0 (2017-03-28)
 
 * add test for systemd template (closes: #664)  [Timur Batyrshin]

@@ -2,6 +2,8 @@ source "http://rubygems.org"
 
 gemspec
 
+gem 'thor', '0.19.4', :require => false
+
 group :test do
   gem 'rake'
   gem 'fakefs', '~> 0.10.0'
@@ -14,5 +16,6 @@ end
 group :development do
   gem 'aws-s3'
   gem 'ronn'
-  gem 'yard'
+  gem 'yard', '~> 0.9.11'
+  gem 'automatiek'
 end
