@@ -66,6 +66,7 @@ class Foreman::Export::CustomSystemd < Foreman::Export::Base
     name =
       case process.command
       when /exec\s+unicorn/ then :unicorn
+      when /exec\s+puma/ then :puma
       when /rake\s+resque/ then :resque
       when /clockwork/ then :clockwork
       else :process
